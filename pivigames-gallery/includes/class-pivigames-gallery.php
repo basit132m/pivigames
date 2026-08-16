@@ -67,6 +67,10 @@ class PiviGames_Gallery {
 		add_action( 'save_post', array( $this, 'save_meta' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 
+		// AJAX save (fires as soon as images are added/removed/reordered, so the
+		// gallery persists even if the classic meta box form isn't submitted).
+		add_action( 'wp_ajax_pivigames_gallery_save', array( $this, 'ajax_save' ) );
+
 		// Front-end. Priority 5 places the screenshots BEFORE the requirements
 		// (10), Steam (15) and downloads (20) blocks.
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_front_assets' ) );
@@ -146,7 +150,7 @@ class PiviGames_Gallery {
 			<?php esc_html_e( 'Selecciona las capturas (recomendado 1280x720 px). Arrastra para reordenar. / Select the screenshots (1280x720 px recommended). Drag to reorder.', 'pivigames-gallery' ); ?>
 		</p>
 
-		<ul id="pivigames-gallery-list" class="pivigames-gallery-list">
+		<ul id="pivigames-gallery-list" class="pivigames-gallery-list" data-post="<?php echo esc_attr( $post->ID ); ?>">
 			<?php foreach ( $ids as $id ) : ?>
 				<?php $thumb = wp_get_attachment_image_url( $id, 'thumbnail' ); ?>
 				<?php if ( $thumb ) : ?>
@@ -233,10 +237,37 @@ class PiviGames_Gallery {
 			'pivigames-gallery-admin',
 			'pivigamesGallery',
 			array(
-				'title'  => esc_html__( 'Seleccionar capturas', 'pivigames-gallery' ),
-				'button' => esc_html__( 'Usar estas imágenes', 'pivigames-gallery' ),
+				'title'   => esc_html__( 'Seleccionar capturas', 'pivigames-gallery' ),
+				'button'  => esc_html__( 'Usar estas imágenes', 'pivigames-gallery' ),
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'pivigames_gallery_ajax' ),
 			)
 		);
+	}
+
+	/**
+	 * AJAX handler: persist the gallery IDs immediately on change.
+	 */
+	public function ajax_save() {
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+
+		if ( ! $post_id || ! check_ajax_referer( 'pivigames_gallery_ajax', 'nonce', false ) ) {
+			wp_send_json_error( array( 'message' => 'bad_request' ), 400 );
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( array( 'message' => 'forbidden' ), 403 );
+		}
+
+		$raw = isset( $_POST['ids'] ) ? sanitize_text_field( wp_unslash( $_POST['ids'] ) ) : '';
+		$ids = array_values( array_filter( array_map( 'absint', explode( ',', $raw ) ) ) );
+
+		if ( ! empty( $ids ) ) {
+			update_post_meta( $post_id, self::META_KEY, $ids );
+		} else {
+			delete_post_meta( $post_id, self::META_KEY );
+		}
+
+		wp_send_json_success( array( 'ids' => $ids ) );
 	}
 
 	/* --------------------------------------------------------------------- *
