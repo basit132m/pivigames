@@ -65,3 +65,20 @@
 	border: 2px dashed #fe4a49;
 	background: #fff5f5;
 }
+
+.pivigames-gallery-status {
+	margin-left: 10px;
+	font-size: 12px;
+	color: #646970;
+	vertical-align: middle;
+}
+
+.pivigames-gallery-status.is-ok {
+	color: #1a7f37;
+	font-weight: 600;
+}
+
+.pivigames-gallery-status.is-error {
+	color: #d63638;
+	font-weight: 600;
+}

@@ -168,6 +168,7 @@ class PiviGames_Gallery {
 			<button type="button" class="button button-secondary" id="pivigames-gallery-add">
 				<?php esc_html_e( '+ Añadir imágenes / Add images', 'pivigames-gallery' ); ?>
 			</button>
+			<span id="pivigames-gallery-status" class="pivigames-gallery-status" aria-live="polite"></span>
 		</p>
 		<?php
 	}
@@ -195,13 +196,18 @@ class PiviGames_Gallery {
 			return;
 		}
 
-		$raw = isset( $_POST['pivigames_gallery'] ) ? sanitize_text_field( wp_unslash( $_POST['pivigames_gallery'] ) ) : '';
+		if ( ! isset( $_POST['pivigames_gallery'] ) ) {
+			return;
+		}
+
+		$raw = sanitize_text_field( wp_unslash( $_POST['pivigames_gallery'] ) );
 		$ids = array_values( array_filter( array_map( 'absint', explode( ',', $raw ) ) ) );
 
+		// Only ever WRITE from the post form; never delete here. Removing all
+		// images is handled by the AJAX save. This prevents an empty classic-
+		// form field from clobbering data that was already stored via AJAX.
 		if ( ! empty( $ids ) ) {
 			update_post_meta( $post_id, self::META_KEY, $ids );
-		} else {
-			delete_post_meta( $post_id, self::META_KEY );
 		}
 	}
 
@@ -241,6 +247,9 @@ class PiviGames_Gallery {
 				'button'  => esc_html__( 'Usar estas imágenes', 'pivigames-gallery' ),
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'pivigames_gallery_ajax' ),
+				'saving'  => esc_html__( 'Guardando…', 'pivigames-gallery' ),
+				'saved'   => esc_html__( 'Guardado ✓', 'pivigames-gallery' ),
+				'error'   => esc_html__( 'Error al guardar', 'pivigames-gallery' ),
 			)
 		);
 	}
