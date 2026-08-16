@@ -18,8 +18,8 @@ This plugin adds two meta boxes to the post editor:
 
 1. **Información Técnica / Technical Information** — Plataforma, Peso total,
    Formato, Fecha de estreno, Fecha de actualización.
-2. **Requisitos del Sistema / System Requirements** — Minimum and Recommended
-   tiers, each with SO, Procesador, Memoria, Gráficos, DirectX and
+2. **Requisitos del Sistema / System Requirements** — Recommended (Recomendados)
+   requirements with SO, Procesador, Memoria, Gráficos, DirectX and
    Almacenamiento.
 
 Admin labels are shown in Spanish with an English hint underneath. The

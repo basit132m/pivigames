@@ -181,10 +181,6 @@ class PiviGames_Specs {
 	 */
 	public function requirement_tiers() {
 		return array(
-			'minimos'     => array(
-				'es' => 'Mínimos',
-				'en' => 'Minimum',
-			),
 			'recomendados' => array(
 				'es' => 'Recomendados',
 				'en' => 'Recommended',
