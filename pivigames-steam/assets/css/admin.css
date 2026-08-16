@@ -1,0 +1,25 @@
+/**
+ * PiviGames Steam — admin styles.
+ */
+
+.pivigames-steam-field {
+	margin: 0 0 16px;
+}
+
+.pivigames-steam-field label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+.pivigames-steam-field .description {
+	display: block;
+	margin-top: 4px;
+	color: #787878;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.pivigames-steam-field input[type="checkbox"] {
+	display: inline;
+	margin-right: 4px;
+}

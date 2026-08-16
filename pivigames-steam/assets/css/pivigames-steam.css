@@ -1,0 +1,217 @@
+/**
+ * PiviGames Steam — front-end styles (Steam-widget look).
+ */
+
+.pivigames-steam {
+	--st-bg: #1b2838;
+	--st-bg-2: #16202d;
+	--st-head: #171a21;
+	--st-text: #c7d5e0;
+	--st-muted: #8f98a0;
+	--st-green: #a4d007;
+	--st-green-2: #799905;
+	--st-price-bg: #000000;
+	margin: 30px 0;
+	font-family: inherit;
+}
+
+.pivigames-steam__title {
+	margin: 0 0 14px;
+	font-size: 18px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* ---------- Native card ---------- */
+
+.pivigames-steam__card {
+	background: var(--st-bg);
+	border-radius: 6px;
+	overflow: hidden;
+	color: var(--st-text);
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.pivigames-steam__head {
+	position: relative;
+	padding: 14px 18px;
+	background: linear-gradient(90deg, #1e2c3a 0%, #2a3f5a 100%);
+	font-size: 17px;
+	line-height: 1.3;
+	padding-right: 56px;
+}
+
+.pivigames-steam__game {
+	color: #ffffff;
+	font-weight: 700;
+}
+
+.pivigames-steam__on {
+	color: var(--st-muted);
+	font-weight: 400;
+}
+
+.pivigames-steam__logo {
+	position: absolute;
+	top: 50%;
+	right: 16px;
+	transform: translateY(-50%);
+	color: #66c0f4;
+	opacity: 0.85;
+	display: inline-flex;
+}
+
+.pivigames-steam__body {
+	display: flex;
+	gap: 16px;
+	padding: 16px 18px;
+}
+
+.pivigames-steam__thumb {
+	flex: 0 0 auto;
+	display: block;
+	line-height: 0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.pivigames-steam__img {
+	display: block;
+	width: 184px;
+	max-width: 40vw;
+	height: auto;
+}
+
+.pivigames-steam__desc {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--st-text);
+}
+
+.pivigames-steam__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	padding: 14px 18px;
+	background: var(--st-bg-2);
+}
+
+.pivigames-steam__platforms {
+	display: inline-flex;
+	gap: 6px;
+	color: var(--st-muted);
+}
+
+.pivigames-steam__pf {
+	display: inline-flex;
+}
+
+.pivigames-steam__buy {
+	display: inline-flex;
+	align-items: stretch;
+	margin-left: auto;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.pivigames-steam__pricebox {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0 12px;
+	background: var(--st-price-bg);
+	color: var(--st-green);
+	font-size: 14px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.pivigames-steam__discount {
+	background: #4c6b22;
+	color: #beee11;
+	padding: 2px 5px;
+	border-radius: 2px;
+	font-size: 12px;
+}
+
+/* Green Buy button. */
+.pivigames-steam__btn,
+.pivigames-steam__btn:visited {
+	display: inline-flex;
+	align-items: center;
+	padding: 10px 20px;
+	background: linear-gradient(90deg, var(--st-green) 0%, var(--st-green-2) 100%);
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: filter 0.15s ease;
+}
+
+.pivigames-steam__btn:hover,
+.pivigames-steam__btn:focus {
+	filter: brightness(1.12);
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.pivigames-steam__card--min .pivigames-steam__foot {
+	justify-content: flex-start;
+	background: var(--st-bg);
+}
+
+.pivigames-steam__card--min .pivigames-steam__btn {
+	border-radius: 3px;
+}
+
+/* ---------- Official iframe ---------- */
+
+.pivigames-steam__iframe-wrap {
+	max-width: 646px;
+}
+
+.pivigames-steam__iframe {
+	display: block;
+	width: 100%;
+	max-width: 646px;
+	height: 190px;
+	border: 0;
+}
+
+.pivigames-steam__link {
+	margin: 8px 0 0;
+	font-size: 13px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 520px) {
+	.pivigames-steam__body {
+		flex-direction: column;
+	}
+
+	.pivigames-steam__img {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.pivigames-steam__foot {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.pivigames-steam__buy {
+		margin-left: 0;
+		justify-content: space-between;
+	}
+
+	.pivigames-steam__btn {
+		flex: 1;
+		justify-content: center;
+	}
+}
