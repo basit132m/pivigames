@@ -1,0 +1,154 @@
+/**
+ * PiviGames Specs — front-end styles.
+ * Designed to match the Hubber theme's red / dark gaming look.
+ */
+
+.pivigames-specs {
+	--pg-accent: #ff5a5a;
+	--pg-dark: #1c1c1c;
+	--pg-dark-2: #262626;
+	--pg-border: rgba(255, 255, 255, 0.08);
+	--pg-text: #f2f2f2;
+	--pg-muted: #b9b9b9;
+	margin: 0 0 30px;
+	font-family: inherit;
+}
+
+.pivigames-specs__block {
+	background: var(--pg-dark);
+	border: 1px solid var(--pg-border);
+	border-radius: 10px;
+	overflow: hidden;
+	margin-bottom: 24px;
+}
+
+.pivigames-specs__title {
+	margin: 0;
+	padding: 14px 20px;
+	background: var(--pg-accent);
+	color: #fff;
+	font-size: 18px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	line-height: 1.3;
+}
+
+/* ---------- Technical information table ---------- */
+
+.pivigames-specs__table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0;
+	color: var(--pg-text);
+}
+
+.pivigames-specs__table tr {
+	border-bottom: 1px solid var(--pg-border);
+}
+
+.pivigames-specs__table tr:last-child {
+	border-bottom: 0;
+}
+
+.pivigames-specs__table th,
+.pivigames-specs__table td {
+	padding: 12px 20px;
+	text-align: left;
+	vertical-align: top;
+	font-size: 15px;
+	line-height: 1.4;
+}
+
+.pivigames-specs__table th {
+	width: 42%;
+	font-weight: 700;
+	color: var(--pg-accent);
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+	background: var(--pg-dark-2);
+}
+
+.pivigames-specs__table td {
+	color: var(--pg-text);
+}
+
+/* ---------- System requirements ---------- */
+
+.pivigames-specs__req-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 0;
+}
+
+.pivigames-specs__req-col {
+	padding: 18px 20px 20px;
+	border-right: 1px solid var(--pg-border);
+}
+
+.pivigames-specs__req-col:last-child {
+	border-right: 0;
+}
+
+.pivigames-specs__subtitle {
+	margin: 0 0 12px;
+	color: var(--pg-accent);
+	font-size: 16px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+}
+
+.pivigames-specs__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.pivigames-specs__list li {
+	padding: 7px 0;
+	border-bottom: 1px dashed var(--pg-border);
+	color: var(--pg-text);
+	font-size: 15px;
+	line-height: 1.5;
+}
+
+.pivigames-specs__list li:last-child {
+	border-bottom: 0;
+}
+
+.pivigames-specs__label {
+	font-weight: 700;
+	color: var(--pg-muted);
+}
+
+.pivigames-specs__value {
+	color: var(--pg-text);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 600px) {
+	.pivigames-specs__table th,
+	.pivigames-specs__table td {
+		display: block;
+		width: 100%;
+	}
+
+	.pivigames-specs__table th {
+		padding-bottom: 4px;
+	}
+
+	.pivigames-specs__table td {
+		padding-top: 4px;
+	}
+
+	.pivigames-specs__req-col {
+		border-right: 0;
+		border-bottom: 1px solid var(--pg-border);
+	}
+
+	.pivigames-specs__req-col:last-child {
+		border-bottom: 0;
+	}
+}
