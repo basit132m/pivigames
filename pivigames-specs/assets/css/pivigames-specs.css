@@ -14,6 +14,11 @@
 	font-family: inherit;
 }
 
+/* Requirements block sits at the end of the content — add breathing room above. */
+.pivigames-specs--bottom {
+	margin-top: 30px;
+}
+
 .pivigames-specs__block {
 	background: var(--pg-dark);
 	border: 1px solid var(--pg-border);

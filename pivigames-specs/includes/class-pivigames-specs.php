@@ -62,9 +62,14 @@ class PiviGames_Specs {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 
 		// Front-end.
+		// Priority 10 keeps the requirements block just above anything a later
+		// plugin (e.g. the download button) appends to the_content at a higher
+		// priority number.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_front_assets' ) );
-		add_filter( 'the_content', array( $this, 'prepend_specs_to_content' ) );
+		add_filter( 'the_content', array( $this, 'inject_specs_into_content' ), 10 );
 		add_shortcode( 'pivigames_specs', array( $this, 'shortcode' ) );
+		add_shortcode( 'pivigames_tech', array( $this, 'shortcode_tech' ) );
+		add_shortcode( 'pivigames_requirements', array( $this, 'shortcode_requirements' ) );
 	}
 
 	/**
@@ -454,41 +459,92 @@ class PiviGames_Specs {
 	 * --------------------------------------------------------------------- */
 
 	/**
-	 * Prepend the specs output to the post content on single posts.
+	 * Inject the specs into the post content on single posts.
+	 *
+	 * Technical Information is placed at the TOP of the content and the
+	 * System Requirements at the BOTTOM (just above anything a later plugin,
+	 * such as the download button, appends at a higher filter priority).
 	 *
 	 * @param string $content The post content.
 	 * @return string
 	 */
-	public function prepend_specs_to_content( $content ) {
+	public function inject_specs_into_content( $content ) {
 		if ( ! is_singular( $this->post_types() ) || ! in_the_loop() || ! is_main_query() ) {
 			return $content;
 		}
 
-		$output = $this->render( get_the_ID() );
-		if ( '' === $output ) {
+		$post_id = get_the_ID();
+		$data    = $this->get_data( $post_id );
+		if ( empty( $data ) ) {
 			return $content;
 		}
 
-		return $output . $content;
+		$top    = $this->render_tech_block( isset( $data['tech'] ) ? $data['tech'] : array() );
+		$bottom = $this->render_requirements_block( isset( $data['req'] ) ? $data['req'] : array() );
+
+		return $top . $content . $bottom;
 	}
 
 	/**
-	 * Shortcode handler: [pivigames_specs id="123"].
+	 * Shortcode: [pivigames_specs id="123"] — both blocks (tech + requirements).
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string
 	 */
 	public function shortcode( $atts ) {
-		$atts    = shortcode_atts( array( 'id' => get_the_ID() ), $atts, 'pivigames_specs' );
-		$post_id = absint( $atts['id'] );
+		$post_id = $this->shortcode_post_id( $atts, 'pivigames_specs' );
 		if ( ! $post_id ) {
 			return '';
 		}
-		return $this->render( $post_id );
+		$data = $this->get_data( $post_id );
+		return $this->render_tech_block( isset( $data['tech'] ) ? $data['tech'] : array() )
+			. $this->render_requirements_block( isset( $data['req'] ) ? $data['req'] : array() );
 	}
 
 	/**
-	 * Build the full HTML for a post's specs.
+	 * Shortcode: [pivigames_tech id="123"] — only the Technical Information table.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
+	 */
+	public function shortcode_tech( $atts ) {
+		$post_id = $this->shortcode_post_id( $atts, 'pivigames_tech' );
+		if ( ! $post_id ) {
+			return '';
+		}
+		$data = $this->get_data( $post_id );
+		return $this->render_tech_block( isset( $data['tech'] ) ? $data['tech'] : array() );
+	}
+
+	/**
+	 * Shortcode: [pivigames_requirements id="123"] — only the System Requirements.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
+	 */
+	public function shortcode_requirements( $atts ) {
+		$post_id = $this->shortcode_post_id( $atts, 'pivigames_requirements' );
+		if ( ! $post_id ) {
+			return '';
+		}
+		$data = $this->get_data( $post_id );
+		return $this->render_requirements_block( isset( $data['req'] ) ? $data['req'] : array() );
+	}
+
+	/**
+	 * Resolve the post ID for a shortcode call.
+	 *
+	 * @param array  $atts Shortcode attributes.
+	 * @param string $tag  Shortcode tag.
+	 * @return int
+	 */
+	private function shortcode_post_id( $atts, $tag ) {
+		$atts = shortcode_atts( array( 'id' => get_the_ID() ), $atts, $tag );
+		return absint( $atts['id'] );
+	}
+
+	/**
+	 * Full specs HTML for a post (both blocks). Kept for backwards compatibility.
 	 *
 	 * @param int $post_id Post ID.
 	 * @return string
@@ -498,15 +554,36 @@ class PiviGames_Specs {
 		if ( empty( $data ) ) {
 			return '';
 		}
+		return $this->render_tech_block( isset( $data['tech'] ) ? $data['tech'] : array() )
+			. $this->render_requirements_block( isset( $data['req'] ) ? $data['req'] : array() );
+	}
 
-		$html = $this->render_tech( isset( $data['tech'] ) ? $data['tech'] : array() );
-		$html .= $this->render_requirements( isset( $data['req'] ) ? $data['req'] : array() );
-
-		if ( '' === $html ) {
+	/**
+	 * Wrap the Technical Information table in its own .pivigames-specs container.
+	 *
+	 * @param array $tech Saved tech values.
+	 * @return string
+	 */
+	private function render_tech_block( $tech ) {
+		$inner = $this->render_tech( $tech );
+		if ( '' === $inner ) {
 			return '';
 		}
+		return '<div class="pivigames-specs pivigames-specs--top">' . $inner . '</div>';
+	}
 
-		return '<div class="pivigames-specs">' . $html . '</div>';
+	/**
+	 * Wrap the System Requirements in its own .pivigames-specs container.
+	 *
+	 * @param array $req Saved requirement values.
+	 * @return string
+	 */
+	private function render_requirements_block( $req ) {
+		$inner = $this->render_requirements( $req );
+		if ( '' === $inner ) {
+			return '';
+		}
+		return '<div class="pivigames-specs pivigames-specs--bottom">' . $inner . '</div>';
 	}
 
 	/**

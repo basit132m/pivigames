@@ -25,11 +25,21 @@ This plugin adds two meta boxes to the post editor:
 Admin labels are shown in Spanish with an English hint underneath. The
 front-end output is fully in Spanish.
 
-The data is automatically displayed at the **top of the post content** on
-single posts. It is also available via the `[pivigames_specs]` shortcode if you
-prefer to place it manually.
+On single posts the data is placed automatically:
+
+* The **Technical Information** table appears at the **top** of the content.
+* The **System Requirements** appear at the **end** of the content (just above
+  anything a later plugin, such as a download button, adds).
 
 Fields left empty are simply not shown.
+
+Shortcodes are also available if you prefer to place blocks manually:
+
+* `[pivigames_specs]` — both blocks together.
+* `[pivigames_tech]` — only the Technical Information table.
+* `[pivigames_requirements]` — only the System Requirements.
+
+Each accepts an optional `id` attribute, e.g. `[pivigames_tech id="123"]`.
 
 == Installation ==
 
