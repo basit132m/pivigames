@@ -396,6 +396,9 @@ class PiviGames_Downloads {
 			return '';
 		}
 
+		// Inline download icon (arrow into tray) shown on the left of the button.
+		$icon = '<svg class="pivigames-downloads__icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 3a1 1 0 0 1 1 1v8.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L11 12.586V4a1 1 0 0 1 1-1zM5 18a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H6a1 1 0 0 1-1-1z"/></svg>';
+
 		$items = '';
 		foreach ( $rows as $row ) {
 			if ( empty( $row['url'] ) ) {
@@ -404,30 +407,26 @@ class PiviGames_Downloads {
 
 			$button = ( ! empty( $row['button'] ) ) ? $row['button'] : self::DEFAULT_BUTTON;
 
-			$meta = '';
+			// Optional subtitle inside the button: "Fuente · Tamaño".
+			$sub_parts = array();
 			if ( ! empty( $row['source'] ) ) {
-				$meta .= sprintf(
-					'<span class="pivigames-downloads__meta-item"><span class="pivigames-downloads__meta-label">%1$s:</span> <span class="pivigames-downloads__meta-value">%2$s</span></span>',
-					esc_html__( 'Fuente', 'pivigames-downloads' ),
-					esc_html( $row['source'] )
-				);
+				$sub_parts[] = $row['source'];
 			}
 			if ( ! empty( $row['size'] ) ) {
-				$meta .= sprintf(
-					'<span class="pivigames-downloads__meta-item"><span class="pivigames-downloads__meta-label">%1$s:</span> <span class="pivigames-downloads__meta-value">%2$s</span></span>',
-					esc_html__( 'Tamaño', 'pivigames-downloads' ),
-					esc_html( $row['size'] )
-				);
+				$sub_parts[] = $row['size'];
+			}
+			$sub = '';
+			if ( ! empty( $sub_parts ) ) {
+				$sub = '<span class="pivigames-downloads__btn-sub">' . esc_html( implode( ' · ', $sub_parts ) ) . '</span>';
 			}
 
-			$items .= '<div class="pivigames-downloads__item">'
-				. '<div class="pivigames-downloads__info">' . $meta . '</div>'
-				. sprintf(
-					'<a class="pivigames-downloads__btn" href="%1$s" target="_blank" rel="nofollow noopener">%2$s</a>',
-					esc_url( $row['url'] ),
-					esc_html( $button )
-				)
-				. '</div>';
+			$items .= sprintf(
+				'<a class="pivigames-downloads__btn" href="%1$s" target="_blank" rel="nofollow noopener">%2$s<span class="pivigames-downloads__btn-text"><span class="pivigames-downloads__btn-label">%3$s</span>%4$s</span></a>',
+				esc_url( $row['url'] ),
+				$icon,
+				esc_html( $button ),
+				$sub
+			);
 		}
 
 		if ( '' === $items ) {
